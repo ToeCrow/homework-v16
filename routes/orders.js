@@ -21,4 +21,33 @@ router.post('/', (req, res) => {
   res.status(201).json(newOrder)
 });
 
+router.put('/:id', (req, res) => {
+  const orderId = parseInt(req.params.id);
+  const { item, quantity } = req.body
+
+  const order = orders.find( o => o.id === orderId);
+  if (!order) {
+    return res.status(404).json({ message: 'Order not found' });
+  }
+
+  if (item) order.item = item;
+  if (quantity) order.quantity = quantity
+
+  res.json({ message: 'Order updated', order});
+});
+
+router.delete('/:id', (req, res) => {
+  const index = orders.findIndex(o => o.id === parseInt(req.params.id));
+
+  if (index === -1) {
+    return res.status(404).json({ message: 'Order not found'})
+  }
+
+  const removedOrder = orders[index];
+ 
+  orders.splice(index, 1);
+
+  res.json({ message: 'Order deleted', removedOrder})
+})
+
 export default router;
